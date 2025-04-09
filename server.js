@@ -35,10 +35,20 @@ if (!isProduction) {
 }
 
 // Serve HTML
-app.use('/dashboard', async (req, res) => {
+app.use('*all', async (req, res) => {
   try {
     const url = req.originalUrl.replace(base, '')
-
+    console.log(`Request URL: ${url}`, url.includes('api/webhook'))
+    if(url.includes('api/webhook')) {
+      res.status(200)
+      res.set({
+        'Content-Type': 'application/json',
+      })
+      res.send({
+        message: 'Webhook received',
+      })
+      return
+    }
     /** @type {string} */
     let template
     /** @type {import('./src/entry-server.ts').render} */
@@ -96,16 +106,6 @@ app.use('/dashboard', async (req, res) => {
     console.log(e.stack)
     res.status(500).end(e.stack)
   }
-})
-
-app.use('/api/webhook', async (req, res) => {
-  res.status(200)
-  res.set({
-    'Content-Type': 'application/json',
-  })
-  res.send({
-    message: 'Webhook received',
-  })
 })
 
 // Start http server
