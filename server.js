@@ -35,7 +35,7 @@ if (!isProduction) {
 }
 
 // Serve HTML
-app.use('*all', async (req, res) => {
+app.use('/dashboard', async (req, res) => {
   try {
     const url = req.originalUrl.replace(base, '')
 
@@ -96,6 +96,16 @@ app.use('*all', async (req, res) => {
     console.log(e.stack)
     res.status(500).end(e.stack)
   }
+})
+
+app.use('/api/webhook', async (req, res) => {
+  res.status(200)
+  res.set({
+    'Content-Type': 'application/json',
+  })
+  res.send({
+    message: 'Webhook received',
+  })
 })
 
 // Start http server
